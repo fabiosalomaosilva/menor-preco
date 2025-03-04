@@ -1,42 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Switch, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Switch, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../lib/contexts/ThemeContext';
-import { openDatabaseSync } from 'expo-sqlite';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SettingsScreen: React.FC = () => {
     const { theme, isDarkMode, toggleTheme } = useTheme();
-    const db = openDatabaseSync('comparapreco.db');
     const router = useRouter();
-
-    const handleClearData = () => {
-        Alert.alert(
-            'Limpar Dados',
-            'Tem certeza que deseja limpar todos os dados do aplicativo? Esta ação não pode ser desfeita.',
-            [
-                { text: 'Cancelar', style: 'cancel' },
-                {
-                    text: 'Limpar',
-                    style: 'destructive',
-                    onPress: async () => {
-                        try {
-                            await db.execAsync('DELETE FROM product_presentations;');
-                            await db.execAsync('DELETE FROM products;');
-                            await db.execAsync('DELETE FROM categories WHERE id > 5;');
-
-                            Alert.alert('Sucesso', 'Todos os dados foram limpos com sucesso!');
-                        } catch (error) {
-                            console.error('Erro ao limpar dados:', error);
-                            Alert.alert('Erro', 'Não foi possível limpar os dados.');
-                        }
-
-                    }
-                }
-            ]
-        );
-    };
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['top']}>
